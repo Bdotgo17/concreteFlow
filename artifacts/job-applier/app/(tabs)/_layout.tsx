@@ -22,6 +22,10 @@ function NativeTabLayout() {
         <Icon sf={{ default: "magnifyingglass", selected: "magnifyingglass" }} />
         <Label>Search</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="network">
+        <Icon sf={{ default: "person.2", selected: "person.2.fill" }} />
+        <Label>Network</Label>
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="profile">
         <Icon sf={{ default: "person", selected: "person.fill" }} />
         <Label>Profile</Label>
@@ -74,9 +78,9 @@ function ClassicTabLayout() {
           title: "Dashboard",
           tabBarIcon: ({ color }) =>
             isIOS ? (
-              <SymbolView name="house" tintColor={color} size={24} />
+              <SymbolView name="house" tintColor={color} size={22} />
             ) : (
-              <Feather name="home" size={22} color={color} />
+              <Feather name="home" size={20} color={color} />
             ),
         }}
       />
@@ -86,9 +90,9 @@ function ClassicTabLayout() {
           title: "Jobs",
           tabBarIcon: ({ color }) =>
             isIOS ? (
-              <SymbolView name="briefcase" tintColor={color} size={24} />
+              <SymbolView name="briefcase" tintColor={color} size={22} />
             ) : (
-              <Feather name="briefcase" size={22} color={color} />
+              <Feather name="briefcase" size={20} color={color} />
             ),
         }}
       />
@@ -98,9 +102,21 @@ function ClassicTabLayout() {
           title: "Search",
           tabBarIcon: ({ color }) =>
             isIOS ? (
-              <SymbolView name="magnifyingglass" tintColor={color} size={24} />
+              <SymbolView name="magnifyingglass" tintColor={color} size={22} />
             ) : (
-              <Feather name="search" size={22} color={color} />
+              <Feather name="search" size={20} color={color} />
+            ),
+        }}
+      />
+      <Tabs.Screen
+        name="network"
+        options={{
+          title: "Network",
+          tabBarIcon: ({ color }) =>
+            isIOS ? (
+              <SymbolView name="person.2" tintColor={color} size={22} />
+            ) : (
+              <Feather name="users" size={20} color={color} />
             ),
         }}
       />
@@ -110,9 +126,9 @@ function ClassicTabLayout() {
           title: "Profile",
           tabBarIcon: ({ color }) =>
             isIOS ? (
-              <SymbolView name="person" tintColor={color} size={24} />
+              <SymbolView name="person" tintColor={color} size={22} />
             ) : (
-              <Feather name="user" size={22} color={color} />
+              <Feather name="user" size={20} color={color} />
             ),
         }}
       />
