@@ -123,7 +123,7 @@ export default function ProfileScreen() {
           </View>
           {scorePercent < 100 && (
             <Text style={[styles.scoreHint, { color: C.textSecondary }]}>
-              Complete your profile to improve auto-apply results
+              Complete your profile to unlock all features
             </Text>
           )}
         </View>
