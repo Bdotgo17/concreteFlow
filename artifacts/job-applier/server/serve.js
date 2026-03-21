@@ -1,17 +1,20 @@
 /**
  * Production server for Expo deployment.
  *
- * - GET / and all web routes → serves the Expo web build (static-build/web/)
+ * On startup: builds the Expo web export if not present.
+ * Then serves:
+ * - GET / and all web routes → Expo web build (static-build/web/)
  * - GET /manifest with expo-platform header → native app manifest JSON
- * Everything else falls through to static file serving.
  */
 
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const { spawnSync } = require("child_process");
 
 const STATIC_ROOT = path.resolve(__dirname, "..", "static-build");
 const WEB_ROOT = path.join(STATIC_ROOT, "web");
+const PROJECT_ROOT = path.resolve(__dirname, "..");
 const basePath = (process.env.BASE_PATH || "/").replace(/\/+$/, "");
 
 const MIME_TYPES = {
@@ -31,6 +34,35 @@ const MIME_TYPES = {
   ".otf": "font/otf",
   ".map": "application/json",
 };
+
+function buildWebIfNeeded() {
+  const indexPath = path.join(WEB_ROOT, "index.html");
+  if (fs.existsSync(indexPath)) {
+    console.log("Web build found, skipping build step.");
+    return;
+  }
+
+  console.log("Web build not found. Running expo export...");
+  fs.mkdirSync(WEB_ROOT, { recursive: true });
+
+  const result = spawnSync(
+    "npx",
+    ["expo", "export", "--platform", "web", "--output-dir", "static-build/web"],
+    {
+      cwd: PROJECT_ROOT,
+      stdio: "inherit",
+      timeout: 300_000, // 5 minutes
+      env: { ...process.env },
+    }
+  );
+
+  if (result.status !== 0) {
+    console.error("expo export failed with status:", result.status);
+    process.exit(1);
+  }
+
+  console.log("Web build complete.");
+}
 
 function serveManifest(platform, res) {
   const manifestPath = path.join(STATIC_ROOT, platform, "manifest.json");
@@ -58,7 +90,7 @@ function serveWebApp(urlPath, res) {
     return;
   }
 
-  // Serve the file if it exists
+  // Serve file if it exists and is not a directory
   if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || "application/octet-stream";
@@ -67,7 +99,7 @@ function serveWebApp(urlPath, res) {
     return;
   }
 
-  // SPA fallback: serve index.html for all unknown routes
+  // SPA fallback: always serve index.html for client-side routing
   const indexPath = path.join(WEB_ROOT, "index.html");
   if (fs.existsSync(indexPath)) {
     res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
@@ -78,6 +110,9 @@ function serveWebApp(urlPath, res) {
   res.writeHead(404);
   res.end("Not Found");
 }
+
+// Build first (synchronously), then start serving
+buildWebIfNeeded();
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url || "/", `http://${req.headers.host}`);
@@ -95,7 +130,7 @@ const server = http.createServer((req, res) => {
     }
   }
 
-  // Everything else: serve the web app
+  // Serve web app
   serveWebApp(pathname, res);
 });
 
