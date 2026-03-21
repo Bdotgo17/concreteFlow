@@ -14,9 +14,18 @@
       "backgroundColor": "#080E1A"
     },
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.bdotgo17.jobtrack"
     },
-    "android": {},
+    "android": {
+      "package": "com.bdotgo17.jobtrack",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/icon.png",
+        "backgroundColor": "#080E1A"
+      },
+      "permissions": []
+    },
     "web": {
       "favicon": "./assets/images/icon.png"
     },
@@ -33,6 +42,11 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "jobtrack-bdotgo17"
+      }
     }
   }
 }
