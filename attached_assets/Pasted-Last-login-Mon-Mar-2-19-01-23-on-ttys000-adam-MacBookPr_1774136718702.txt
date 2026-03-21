@@ -1,0 +1,71 @@
+Last login: Mon Mar  2 19:01:23 on ttys000
+adam@MacBookPro ~ % clear
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+adam@MacBookPro ~ % git clone https://github.com/Bdotgo17/jobTrack.git
+cd jobTrack/artifacts/job-applier
+
+Cloning into 'jobTrack'...
+remote: Enumerating objects: 249, done.
+remote: Counting objects: 100% (249/249), done.
+remote: Compressing objects: 100% (175/175), done.
+remote: Total 249 (delta 49), reused 249 (delta 49), pack-reused 0 (from 0)
+Receiving objects: 100% (249/249), 2.57 MiB | 7.09 MiB/s, done.
+Resolving deltas: 100% (49/49), done.
+adam@MacBookPro job-applier % npm install -g eas-cli
+npm install
+npm error code EACCES
+npm error syscall mkdir
+npm error path /usr/local/lib/node_modules/eas-cli
+npm error errno -13
+npm error Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modules/eas-cli'
+npm error     at async mkdir (node:internal/fs/promises:852:10)
+npm error     at async /usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:624:20
+npm error     at async Promise.allSettled (index 0)
+npm error     at async [reifyPackages] (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:325:11)
+npm error     at async Arborist.reify (/usr/local/lib/node_modules/npm/node_modules/@npmcli/arborist/lib/arborist/reify.js:142:5)
+npm error     at async Install.exec (/usr/local/lib/node_modules/npm/lib/commands/install.js:150:5)
+npm error     at async Npm.exec (/usr/local/lib/node_modules/npm/lib/npm.js:207:9)
+npm error     at async module.exports (/usr/local/lib/node_modules/npm/lib/cli/entry.js:74:5) {
+npm error   errno: -13,
+npm error   code: 'EACCES',
+npm error   syscall: 'mkdir',
+npm error   path: '/usr/local/lib/node_modules/eas-cli'
+npm error }
+npm error
+npm error The operation was rejected by your operating system.
+npm error It is likely you do not have the permissions to access this file as the current user
+npm error
+npm error If you believe this might be a permissions issue, please double-check the
+npm error permissions of the file and its containing directories, or try running
+npm error the command again as root/Administrator.
+npm notice
+npm notice New major version of npm available! 10.9.2 -> 11.12.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.12.0
+npm notice To update run: npm install -g npm@11.12.0
+npm notice
+npm error A complete log of this run can be found in: /Users/adam/.npm/_logs/2026-03-21T23_44_57_396Z-debug-0.log
+npm error code EUNSUPPORTEDPROTOCOL
+npm error Unsupported URL Type "catalog:": catalog:
+npm error A complete log of this run can be found in: /Users/adam/.npm/_logs/2026-03-21T23_45_07_404Z-debug-0.log
+adam@MacBookPro job-applier % 
