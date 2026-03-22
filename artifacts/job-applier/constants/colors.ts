@@ -1,20 +1,20 @@
-const primary = "#1B4FFF";
-const primaryDark = "#0F3AD9";
-const accent = "#00C2A8";
+const primary = "#D97706";
+const primaryDark = "#B45309";
+const accent = "#64748B";
 
 export default {
   light: {
     text: "#0D1117",
     textSecondary: "#6B7280",
     textTertiary: "#9CA3AF",
-    background: "#F8FAFF",
+    background: "#FFFBF5",
     surface: "#FFFFFF",
-    surfaceSecondary: "#F1F5F9",
-    border: "#E5E8EF",
+    surfaceSecondary: "#F7F4EF",
+    border: "#E8E1D6",
     tint: primary,
     tintDark: primaryDark,
     accent,
-    accentSoft: "#E6FBF8",
+    accentSoft: "#F1F5F9",
     tabIconDefault: "#9CA3AF",
     tabIconSelected: primary,
     success: "#10B981",
@@ -25,23 +25,25 @@ export default {
     errorSoft: "#FEF2F2",
     info: "#3B82F6",
     infoSoft: "#EFF6FF",
-    cardShadow: "rgba(15, 58, 217, 0.08)",
+    cardShadow: "rgba(180, 83, 9, 0.08)",
     overlay: "rgba(0, 0, 0, 0.4)",
+    concrete: "#8B7355",
+    concreteSoft: "#F5F0E8",
   },
   dark: {
     text: "#F1F5F9",
     textSecondary: "#94A3B8",
     textTertiary: "#64748B",
-    background: "#080E1A",
-    surface: "#111827",
-    surfaceSecondary: "#1E2A3A",
-    border: "#1E2A3A",
-    tint: "#4F7FFF",
+    background: "#0F0A06",
+    surface: "#1A1209",
+    surfaceSecondary: "#261C0F",
+    border: "#2A1F10",
+    tint: "#F59E0B",
     tintDark: primary,
-    accent: "#00D9BC",
-    accentSoft: "#002B27",
+    accent: "#94A3B8",
+    accentSoft: "#1E293B",
     tabIconDefault: "#64748B",
-    tabIconSelected: "#4F7FFF",
+    tabIconSelected: "#F59E0B",
     success: "#34D399",
     successSoft: "#052E16",
     warning: "#FBBF24",
@@ -52,5 +54,7 @@ export default {
     infoSoft: "#0C1F3F",
     cardShadow: "rgba(0, 0, 0, 0.3)",
     overlay: "rgba(0, 0, 0, 0.6)",
+    concrete: "#A89070",
+    concreteSoft: "#1A1209",
   },
 };

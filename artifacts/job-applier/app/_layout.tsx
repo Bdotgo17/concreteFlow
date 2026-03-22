@@ -25,39 +25,32 @@ function RootLayoutNav() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="job/[id]"
-        options={{
-          headerShown: false,
-          presentation: "card",
-        }}
+        name="quote-request/[id]"
+        options={{ headerShown: false, presentation: "card" }}
       />
       <Stack.Screen
-        name="add-job"
-        options={{
-          headerShown: false,
-          presentation: "modal",
-        }}
+        name="quote-request/new"
+        options={{ headerShown: false, presentation: "modal" }}
       />
       <Stack.Screen
-        name="edit-profile"
-        options={{
-          headerShown: false,
-          presentation: "modal",
-        }}
+        name="quote/[id]"
+        options={{ headerShown: false, presentation: "card" }}
       />
       <Stack.Screen
-        name="add-contact"
-        options={{
-          headerShown: false,
-          presentation: "modal",
-        }}
+        name="quote/new"
+        options={{ headerShown: false, presentation: "modal" }}
       />
       <Stack.Screen
-        name="contact/[id]"
-        options={{
-          headerShown: false,
-          presentation: "card",
-        }}
+        name="invoice/[id]"
+        options={{ headerShown: false, presentation: "card" }}
+      />
+      <Stack.Screen
+        name="customer/submit-request"
+        options={{ headerShown: false, presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="customer/view-quote"
+        options={{ headerShown: false, presentation: "card" }}
       />
     </Stack>
   );

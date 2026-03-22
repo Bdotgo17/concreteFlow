@@ -48,6 +48,29 @@ Every package extends `tsconfig.base.json` which sets `composite: true`. The roo
 - `pnpm run build` — runs `typecheck` first, then recursively runs `build` in all packages that define it
 - `pnpm run typecheck` — runs `tsc --build --emitDeclarationOnly` using project references
 
+## Mobile App: ConcreteFlow
+
+`artifacts/job-applier` contains **ConcreteFlow**, a concrete business management mobile app built with Expo + React Router. It serves two audiences:
+
+### Staff-facing tabs:
+- **Dashboard** — Summary stats (new requests, active quotes, unpaid invoices, outstanding balance) + recent requests list
+- **Requests** — Filterable list of quote requests with status (New/Reviewed/Quoted/Declined), detail view with status updates and "Create Quote" action
+- **Quotes** — Filterable list of quotes with totals, detail view shows line items and allows status progression (Draft→Sent→Accepted), can generate invoice from accepted quotes
+- **Invoices** — Filterable list with paid/unpaid toggle, detail view shows full line items and allows status update
+
+### Customer-facing tab:
+- **Customer** — Landing hub with "Submit a Quote Request" form and "View My Quote" lookup (search by email to see quotes/invoices)
+
+### Data layer:
+- **AppContext** (`context/AppContext.tsx`) — All data backed by REST API, no local storage. Uses `EXPO_PUBLIC_DOMAIN` env var to construct API URLs.
+- API routes: `/api/quote-requests`, `/api/quotes`, `/api/invoices` (CRUD on API server)
+
+### Branding:
+- Orange/amber color scheme (primary: `#D97706`), warm background tones
+- App name: "ConcreteFlow"
+
+---
+
 ## Packages
 
 ### `artifacts/api-server` (`@workspace/api-server`)
