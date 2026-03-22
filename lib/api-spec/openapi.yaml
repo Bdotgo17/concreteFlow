@@ -10,6 +10,12 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: quoteRequests
+    description: Quote request operations
+  - name: quotes
+    description: Quote operations
+  - name: invoices
+    description: Invoice operations
 paths:
   /healthz:
     get:
@@ -24,6 +30,407 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /quote-requests:
+    post:
+      operationId: submitQuoteRequest
+      tags: [quoteRequests]
+      summary: Submit a quote request (public)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitQuoteRequestBody"
+      responses:
+        "201":
+          description: Quote request created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteRequest"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      operationId: listQuoteRequests
+      tags: [quoteRequests]
+      summary: List all quote requests (staff)
+      responses:
+        "200":
+          description: List of quote requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QuoteRequest"
+
+  /quote-requests/{id}:
+    get:
+      operationId: getQuoteRequest
+      tags: [quoteRequests]
+      summary: Get a single quote request
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Quote request found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteRequest"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /quote-requests/{id}/status:
+    patch:
+      operationId: updateQuoteRequestStatus
+      tags: [quoteRequests]
+      summary: Update quote request status (staff)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateQuoteRequestStatusBody"
+      responses:
+        "200":
+          description: Updated quote request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteRequest"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /quotes:
+    post:
+      operationId: createQuote
+      tags: [quotes]
+      summary: Create a quote from a quote request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateQuoteBody"
+      responses:
+        "201":
+          description: Quote created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quote"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    get:
+      operationId: listQuotes
+      tags: [quotes]
+      summary: List all quotes
+      responses:
+        "200":
+          description: List of quotes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Quote"
+
+  /quotes/{id}:
+    get:
+      operationId: getQuote
+      tags: [quotes]
+      summary: Get a single quote with its line items
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Quote with line items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteWithLineItems"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteQuote
+      tags: [quotes]
+      summary: Delete a quote
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /quotes/{id}/status:
+    patch:
+      operationId: updateQuoteStatus
+      tags: [quotes]
+      summary: Update quote status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateQuoteStatusBody"
+      responses:
+        "200":
+          description: Updated quote
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Quote"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /quotes/{id}/line-items:
+    post:
+      operationId: addLineItem
+      tags: [quotes]
+      summary: Add a line item to a quote
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertLineItemBody"
+      responses:
+        "201":
+          description: Line item created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteLineItem"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /quotes/{id}/line-items/{itemId}:
+    put:
+      operationId: updateLineItem
+      tags: [quotes]
+      summary: Update a line item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpsertLineItemBody"
+      responses:
+        "200":
+          description: Updated line item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteLineItem"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteLineItem
+      tags: [quotes]
+      summary: Remove a line item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /invoices/from-quote/{quoteId}:
+    post:
+      operationId: generateInvoiceFromQuote
+      tags: [invoices]
+      summary: Generate an invoice from an accepted quote
+      parameters:
+        - name: quoteId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "201":
+          description: Invoice created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+        "400":
+          description: Quote is not accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Quote not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /invoices:
+    get:
+      operationId: listInvoices
+      tags: [invoices]
+      summary: List all invoices
+      responses:
+        "200":
+          description: List of invoices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Invoice"
+
+  /invoices/{id}:
+    get:
+      operationId: getInvoice
+      tags: [invoices]
+      summary: Get a single invoice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Invoice found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /invoices/{id}/status:
+    patch:
+      operationId: updateInvoiceStatus
+      tags: [invoices]
+      summary: Update invoice status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInvoiceStatusBody"
+      responses:
+        "200":
+          description: Updated invoice
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +441,235 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    QuoteRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+          nullable: true
+        customerAddress:
+          type: string
+          nullable: true
+        projectDescription:
+          type: string
+        desiredDate:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum: [pending, reviewed, converted, rejected]
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - customerName
+        - customerEmail
+        - projectDescription
+        - status
+        - createdAt
+        - updatedAt
+
+    SubmitQuoteRequestBody:
+      type: object
+      properties:
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        customerPhone:
+          type: string
+        customerAddress:
+          type: string
+        projectDescription:
+          type: string
+        desiredDate:
+          type: string
+        notes:
+          type: string
+      required:
+        - customerName
+        - customerEmail
+        - projectDescription
+
+    UpdateQuoteRequestStatusBody:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, reviewed, converted, rejected]
+        notes:
+          type: string
+      required:
+        - status
+
+    Quote:
+      type: object
+      properties:
+        id:
+          type: integer
+        quoteRequestId:
+          type: integer
+        status:
+          type: string
+          enum: [draft, sent, accepted, declined]
+        expiryDate:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - quoteRequestId
+        - status
+        - createdAt
+        - updatedAt
+
+    QuoteWithLineItems:
+      allOf:
+        - $ref: "#/components/schemas/Quote"
+        - type: object
+          properties:
+            lineItems:
+              type: array
+              items:
+                $ref: "#/components/schemas/QuoteLineItem"
+          required:
+            - lineItems
+
+    CreateQuoteBody:
+      type: object
+      properties:
+        quoteRequestId:
+          type: integer
+        expiryDate:
+          type: string
+        notes:
+          type: string
+      required:
+        - quoteRequestId
+
+    UpdateQuoteStatusBody:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [draft, sent, accepted, declined]
+      required:
+        - status
+
+    QuoteLineItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        quoteId:
+          type: integer
+        description:
+          type: string
+        unit:
+          type: string
+        quantity:
+          type: string
+        unitPrice:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - quoteId
+        - description
+        - unit
+        - quantity
+        - unitPrice
+        - createdAt
+        - updatedAt
+
+    UpsertLineItemBody:
+      type: object
+      properties:
+        description:
+          type: string
+        unit:
+          type: string
+        quantity:
+          type: string
+        unitPrice:
+          type: string
+      required:
+        - description
+        - unit
+        - quantity
+        - unitPrice
+
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: integer
+        quoteId:
+          type: integer
+        status:
+          type: string
+          enum: [unpaid, paid]
+        dueDate:
+          type: string
+          nullable: true
+        total:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - quoteId
+        - status
+        - total
+        - createdAt
+        - updatedAt
+
+    UpdateInvoiceStatusBody:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [unpaid, paid]
+      required:
+        - status

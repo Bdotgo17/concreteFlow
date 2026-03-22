@@ -56,7 +56,7 @@ Express 5 API server. Routes live in `src/routes/` and use `@workspace/api-zod` 
 
 - Entry: `src/index.ts` — reads `PORT`, starts Express
 - App setup: `src/app.ts` — mounts CORS, JSON/urlencoded parsing, routes at `/api`
-- Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /health` (full path: `/api/health`)
+- Routes: `src/routes/index.ts` mounts sub-routers; `src/routes/health.ts` exposes `GET /healthz`; `src/routes/quoteRequests.ts` handles quote request CRUD; `src/routes/quotes.ts` handles quote CRUD with line items; `src/routes/invoices.ts` handles invoice generation and CRUD
 - Depends on: `@workspace/db`, `@workspace/api-zod`
 - `pnpm --filter @workspace/api-server run dev` — run the dev server
 - `pnpm --filter @workspace/api-server run build` — production esbuild bundle (`dist/index.cjs`)
@@ -68,7 +68,10 @@ Database layer using Drizzle ORM with PostgreSQL. Exports a Drizzle client insta
 
 - `src/index.ts` — creates a `Pool` + Drizzle instance, exports schema
 - `src/schema/index.ts` — barrel re-export of all models
-- `src/schema/<modelname>.ts` — table definitions with `drizzle-zod` insert schemas (no models definitions exist right now)
+- `src/schema/customers.ts` — customers table (name, email, phone, address)
+- `src/schema/quoteRequests.ts` — quote_requests table (customer info, project description, desired date, status: pending/reviewed/converted/rejected)
+- `src/schema/quotes.ts` — quotes table (linked to quote request, status: draft/sent/accepted/declined, expiry date, notes) and quote_line_items table (description, unit, quantity, unit price)
+- `src/schema/invoices.ts` — invoices table (linked to quote, status: unpaid/paid, due date, total)
 - `drizzle.config.ts` — Drizzle Kit config (requires `DATABASE_URL`, automatically provided by Replit)
 - Exports: `.` (pool, db, schema), `./schema` (schema only)
 

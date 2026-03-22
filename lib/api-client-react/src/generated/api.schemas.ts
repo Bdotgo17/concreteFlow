@@ -8,3 +8,147 @@
 export interface HealthStatus {
   status: string;
 }
+
+export interface ErrorResponse {
+  error: string;
+}
+
+export type QuoteRequestStatus =
+  (typeof QuoteRequestStatus)[keyof typeof QuoteRequestStatus];
+
+export const QuoteRequestStatus = {
+  pending: "pending",
+  reviewed: "reviewed",
+  converted: "converted",
+  rejected: "rejected",
+} as const;
+
+export interface QuoteRequest {
+  id: number;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string | null;
+  customerAddress?: string | null;
+  projectDescription: string;
+  desiredDate?: string | null;
+  status: QuoteRequestStatus;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SubmitQuoteRequestBody {
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  customerAddress?: string;
+  projectDescription: string;
+  desiredDate?: string;
+  notes?: string;
+}
+
+export type UpdateQuoteRequestStatusBodyStatus =
+  (typeof UpdateQuoteRequestStatusBodyStatus)[keyof typeof UpdateQuoteRequestStatusBodyStatus];
+
+export const UpdateQuoteRequestStatusBodyStatus = {
+  pending: "pending",
+  reviewed: "reviewed",
+  converted: "converted",
+  rejected: "rejected",
+} as const;
+
+export interface UpdateQuoteRequestStatusBody {
+  status: UpdateQuoteRequestStatusBodyStatus;
+  notes?: string;
+}
+
+export type QuoteStatus = (typeof QuoteStatus)[keyof typeof QuoteStatus];
+
+export const QuoteStatus = {
+  draft: "draft",
+  sent: "sent",
+  accepted: "accepted",
+  declined: "declined",
+} as const;
+
+export interface Quote {
+  id: number;
+  quoteRequestId: number;
+  status: QuoteStatus;
+  expiryDate?: string | null;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QuoteLineItem {
+  id: number;
+  quoteId: number;
+  description: string;
+  unit: string;
+  quantity: string;
+  unitPrice: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type QuoteWithLineItems = Quote & {
+  lineItems: QuoteLineItem[];
+};
+
+export interface CreateQuoteBody {
+  quoteRequestId: number;
+  expiryDate?: string;
+  notes?: string;
+}
+
+export type UpdateQuoteStatusBodyStatus =
+  (typeof UpdateQuoteStatusBodyStatus)[keyof typeof UpdateQuoteStatusBodyStatus];
+
+export const UpdateQuoteStatusBodyStatus = {
+  draft: "draft",
+  sent: "sent",
+  accepted: "accepted",
+  declined: "declined",
+} as const;
+
+export interface UpdateQuoteStatusBody {
+  status: UpdateQuoteStatusBodyStatus;
+}
+
+export interface UpsertLineItemBody {
+  description: string;
+  unit: string;
+  quantity: string;
+  unitPrice: string;
+}
+
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus];
+
+export const InvoiceStatus = {
+  unpaid: "unpaid",
+  paid: "paid",
+} as const;
+
+export interface Invoice {
+  id: number;
+  quoteId: number;
+  status: InvoiceStatus;
+  dueDate?: string | null;
+  total: string;
+  notes?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type UpdateInvoiceStatusBodyStatus =
+  (typeof UpdateInvoiceStatusBodyStatus)[keyof typeof UpdateInvoiceStatusBodyStatus];
+
+export const UpdateInvoiceStatusBodyStatus = {
+  unpaid: "unpaid",
+  paid: "paid",
+} as const;
+
+export interface UpdateInvoiceStatusBody {
+  status: UpdateInvoiceStatusBodyStatus;
+}

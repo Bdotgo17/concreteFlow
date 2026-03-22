@@ -14,3 +14,278 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary Submit a quote request (public)
+ */
+export const SubmitQuoteRequestBody = zod.object({
+  customerName: zod.string(),
+  customerEmail: zod.string(),
+  customerPhone: zod.string().optional(),
+  customerAddress: zod.string().optional(),
+  projectDescription: zod.string(),
+  desiredDate: zod.string().optional(),
+  notes: zod.string().optional(),
+});
+
+/**
+ * @summary List all quote requests (staff)
+ */
+export const ListQuoteRequestsResponseItem = zod.object({
+  id: zod.number(),
+  customerName: zod.string(),
+  customerEmail: zod.string(),
+  customerPhone: zod.string().nullish(),
+  customerAddress: zod.string().nullish(),
+  projectDescription: zod.string(),
+  desiredDate: zod.string().nullish(),
+  status: zod.enum(["pending", "reviewed", "converted", "rejected"]),
+  notes: zod.string().nullish(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
+export const ListQuoteRequestsResponse = zod.array(
+  ListQuoteRequestsResponseItem,
+);
+
+/**
+ * @summary Get a single quote request
+ */
+export const GetQuoteRequestParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetQuoteRequestResponse = zod.object({
+  id: zod.number(),
+  customerName: zod.string(),
+  customerEmail: zod.string(),
+  customerPhone: zod.string().nullish(),
+  customerAddress: zod.string().nullish(),
+  projectDescription: zod.string(),
+  desiredDate: zod.string().nullish(),
+  status: zod.enum(["pending", "reviewed", "converted", "rejected"]),
+  notes: zod.string().nullish(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
+
+/**
+ * @summary Update quote request status (staff)
+ */
+export const UpdateQuoteRequestStatusParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateQuoteRequestStatusBody = zod.object({
+  status: zod.enum(["pending", "reviewed", "converted", "rejected"]),
+  notes: zod.string().optional(),
+});
+
+export const UpdateQuoteRequestStatusResponse = zod.object({
+  id: zod.number(),
+  customerName: zod.string(),
+  customerEmail: zod.string(),
+  customerPhone: zod.string().nullish(),
+  customerAddress: zod.string().nullish(),
+  projectDescription: zod.string(),
+  desiredDate: zod.string().nullish(),
+  status: zod.enum(["pending", "reviewed", "converted", "rejected"]),
+  notes: zod.string().nullish(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
+
+/**
+ * @summary Create a quote from a quote request
+ */
+export const CreateQuoteBody = zod.object({
+  quoteRequestId: zod.number(),
+  expiryDate: zod.string().optional(),
+  notes: zod.string().optional(),
+});
+
+/**
+ * @summary List all quotes
+ */
+export const ListQuotesResponseItem = zod.object({
+  id: zod.number(),
+  quoteRequestId: zod.number(),
+  status: zod.enum(["draft", "sent", "accepted", "declined"]),
+  expiryDate: zod.string().nullish(),
+  notes: zod.string().nullish(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
+export const ListQuotesResponse = zod.array(ListQuotesResponseItem);
+
+/**
+ * @summary Get a single quote with its line items
+ */
+export const GetQuoteParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetQuoteResponse = zod
+  .object({
+    id: zod.number(),
+    quoteRequestId: zod.number(),
+    status: zod.enum(["draft", "sent", "accepted", "declined"]),
+    expiryDate: zod.string().nullish(),
+    notes: zod.string().nullish(),
+    createdAt: zod.date(),
+    updatedAt: zod.date(),
+  })
+  .and(
+    zod.object({
+      lineItems: zod.array(
+        zod.object({
+          id: zod.number(),
+          quoteId: zod.number(),
+          description: zod.string(),
+          unit: zod.string(),
+          quantity: zod.string(),
+          unitPrice: zod.string(),
+          createdAt: zod.date(),
+          updatedAt: zod.date(),
+        }),
+      ),
+    }),
+  );
+
+/**
+ * @summary Delete a quote
+ */
+export const DeleteQuoteParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary Update quote status
+ */
+export const UpdateQuoteStatusParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateQuoteStatusBody = zod.object({
+  status: zod.enum(["draft", "sent", "accepted", "declined"]),
+});
+
+export const UpdateQuoteStatusResponse = zod.object({
+  id: zod.number(),
+  quoteRequestId: zod.number(),
+  status: zod.enum(["draft", "sent", "accepted", "declined"]),
+  expiryDate: zod.string().nullish(),
+  notes: zod.string().nullish(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
+
+/**
+ * @summary Add a line item to a quote
+ */
+export const AddLineItemParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const AddLineItemBody = zod.object({
+  description: zod.string(),
+  unit: zod.string(),
+  quantity: zod.string(),
+  unitPrice: zod.string(),
+});
+
+/**
+ * @summary Update a line item
+ */
+export const UpdateLineItemParams = zod.object({
+  id: zod.coerce.number(),
+  itemId: zod.coerce.number(),
+});
+
+export const UpdateLineItemBody = zod.object({
+  description: zod.string(),
+  unit: zod.string(),
+  quantity: zod.string(),
+  unitPrice: zod.string(),
+});
+
+export const UpdateLineItemResponse = zod.object({
+  id: zod.number(),
+  quoteId: zod.number(),
+  description: zod.string(),
+  unit: zod.string(),
+  quantity: zod.string(),
+  unitPrice: zod.string(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
+
+/**
+ * @summary Remove a line item
+ */
+export const DeleteLineItemParams = zod.object({
+  id: zod.coerce.number(),
+  itemId: zod.coerce.number(),
+});
+
+/**
+ * @summary Generate an invoice from an accepted quote
+ */
+export const GenerateInvoiceFromQuoteParams = zod.object({
+  quoteId: zod.coerce.number(),
+});
+
+/**
+ * @summary List all invoices
+ */
+export const ListInvoicesResponseItem = zod.object({
+  id: zod.number(),
+  quoteId: zod.number(),
+  status: zod.enum(["unpaid", "paid"]),
+  dueDate: zod.string().nullish(),
+  total: zod.string(),
+  notes: zod.string().nullish(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
+export const ListInvoicesResponse = zod.array(ListInvoicesResponseItem);
+
+/**
+ * @summary Get a single invoice
+ */
+export const GetInvoiceParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetInvoiceResponse = zod.object({
+  id: zod.number(),
+  quoteId: zod.number(),
+  status: zod.enum(["unpaid", "paid"]),
+  dueDate: zod.string().nullish(),
+  total: zod.string(),
+  notes: zod.string().nullish(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
+
+/**
+ * @summary Update invoice status
+ */
+export const UpdateInvoiceStatusParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateInvoiceStatusBody = zod.object({
+  status: zod.enum(["unpaid", "paid"]),
+});
+
+export const UpdateInvoiceStatusResponse = zod.object({
+  id: zod.number(),
+  quoteId: zod.number(),
+  status: zod.enum(["unpaid", "paid"]),
+  dueDate: zod.string().nullish(),
+  total: zod.string(),
+  notes: zod.string().nullish(),
+  createdAt: zod.date(),
+  updatedAt: zod.date(),
+});
