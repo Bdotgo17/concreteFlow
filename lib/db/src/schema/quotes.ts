@@ -22,9 +22,11 @@ export type QuoteStatus = (typeof quoteStatusValues)[number];
 export const quotesTable = pgTable("quotes", {
   id: serial("id").primaryKey(),
   quoteRequestId: integer("quote_request_id")
-    .references(() => quoteRequestsTable.id)
-    .notNull(),
+    .references(() => quoteRequestsTable.id),
+  customerName: text("customer_name").notNull().default(""),
+  customerEmail: text("customer_email").notNull().default(""),
   status: text("status").$type<QuoteStatus>().default("draft").notNull(),
+  totalAmount: numeric("total_amount", { precision: 12, scale: 2 }).notNull().default("0"),
   expiryDate: date("expiry_date"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),

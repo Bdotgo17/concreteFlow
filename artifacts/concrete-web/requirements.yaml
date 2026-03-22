@@ -1,0 +1,17 @@
+packages:
+  "framer-motion": "Page transitions and smooth interactions"
+  "lucide-react": "Icons for the UI"
+  "react-hook-form": "Form state management"
+  "@hookform/resolvers": "Zod validation for forms"
+  "zod": "Schema definition and validation"
+  "clsx": "Conditional class merging"
+  "tailwind-merge": "Merging tailwind classes without conflicts"
+  "date-fns": "Date formatting"
+
+images:
+  - path: "artifacts/concrete-web/public/images/concrete-bg.png"
+    description: "A clean, modern, light grey architectural concrete texture with subtle smooth imperfections, professional photography, soft lighting"
+    aspect_ratio: "16:9"
+
+notes:
+  - Workspace package @workspace/api-client-react exports the generated hooks

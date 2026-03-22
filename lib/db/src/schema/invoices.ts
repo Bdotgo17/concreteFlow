@@ -19,10 +19,13 @@ export const invoicesTable = pgTable("invoices", {
   quoteId: integer("quote_id")
     .references(() => quotesTable.id)
     .notNull(),
+  customerName: text("customer_name").notNull().default(""),
+  customerEmail: text("customer_email").notNull().default(""),
   status: text("status").$type<InvoiceStatus>().default("unpaid").notNull(),
   dueDate: date("due_date"),
-  total: numeric("total", { precision: 10, scale: 2 }).notNull(),
+  totalAmount: numeric("total_amount", { precision: 12, scale: 2 }).notNull().default("0"),
   notes: text("notes"),
+  paidAt: timestamp("paid_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

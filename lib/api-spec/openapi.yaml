@@ -3,7 +3,7 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Concrete business API specification
 servers:
   - url: /api
     description: Base API path
@@ -32,6 +32,19 @@ paths:
                 $ref: "#/components/schemas/HealthStatus"
 
   /quote-requests:
+    get:
+      operationId: listQuoteRequests
+      tags: [quoteRequests]
+      summary: List all quote requests (staff)
+      responses:
+        "200":
+          description: List of quote requests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/QuoteRequest"
     post:
       operationId: submitQuoteRequest
       tags: [quoteRequests]
@@ -55,19 +68,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
-    get:
-      operationId: listQuoteRequests
-      tags: [quoteRequests]
-      summary: List all quote requests (staff)
-      responses:
-        "200":
-          description: List of quote requests
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/QuoteRequest"
 
   /quote-requests/{id}:
     get:
@@ -126,29 +126,6 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
 
   /quotes:
-    post:
-      operationId: createQuote
-      tags: [quotes]
-      summary: Create a quote from a quote request
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/CreateQuoteBody"
-      responses:
-        "201":
-          description: Quote created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Quote"
-        "400":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ErrorResponse"
     get:
       operationId: listQuotes
       tags: [quotes]
@@ -162,6 +139,29 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Quote"
+    post:
+      operationId: createQuote
+      tags: [quotes]
+      summary: Create a new quote
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateQuoteBody"
+      responses:
+        "201":
+          description: Quote created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteWithLineItems"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /quotes/{id}:
     get:
@@ -177,6 +177,35 @@ paths:
       responses:
         "200":
           description: Quote with line items
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteWithLineItems"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateQuote
+      tags: [quotes]
+      summary: Update a quote (status, line items, notes)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateQuoteBody"
+      responses:
+        "200":
+          description: Updated quote
           content:
             application/json:
               schema:
@@ -431,6 +460,44 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
 
+  /invoices/{id}/mark-paid:
+    post:
+      operationId: markInvoicePaid
+      tags: [invoices]
+      summary: Mark an invoice as paid
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Invoice marked paid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard:
+    get:
+      operationId: getDashboardStats
+      tags: [health]
+      summary: Get dashboard summary statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
 components:
   schemas:
     HealthStatus:
@@ -449,6 +516,30 @@ components:
       required:
         - error
 
+    DashboardStats:
+      type: object
+      properties:
+        openRequestsCount:
+          type: integer
+        activeQuotesCount:
+          type: integer
+        unpaidInvoicesCount:
+          type: integer
+        recentRequests:
+          type: array
+          items:
+            $ref: "#/components/schemas/QuoteRequest"
+        recentQuotes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Quote"
+      required:
+        - openRequestsCount
+        - activeQuotesCount
+        - unpaidInvoicesCount
+        - recentRequests
+        - recentQuotes
+
     QuoteRequest:
       type: object
       properties:
@@ -466,7 +557,12 @@ components:
           nullable: true
         projectDescription:
           type: string
-        desiredDate:
+        concreteType:
+          type: string
+        volumeEstimate:
+          type: number
+          description: Volume in cubic yards
+        desiredDeliveryDate:
           type: string
           nullable: true
         status:
@@ -486,6 +582,8 @@ components:
         - customerName
         - customerEmail
         - projectDescription
+        - concreteType
+        - volumeEstimate
         - status
         - createdAt
         - updatedAt
@@ -503,7 +601,11 @@ components:
           type: string
         projectDescription:
           type: string
-        desiredDate:
+        concreteType:
+          type: string
+        volumeEstimate:
+          type: number
+        desiredDeliveryDate:
           type: string
         notes:
           type: string
@@ -511,6 +613,8 @@ components:
         - customerName
         - customerEmail
         - projectDescription
+        - concreteType
+        - volumeEstimate
 
     UpdateQuoteRequestStatusBody:
       type: object
@@ -530,9 +634,16 @@ components:
           type: integer
         quoteRequestId:
           type: integer
+          nullable: true
+        customerName:
+          type: string
+        customerEmail:
+          type: string
         status:
           type: string
           enum: [draft, sent, accepted, declined]
+        totalAmount:
+          type: number
         expiryDate:
           type: string
           nullable: true
@@ -547,10 +658,38 @@ components:
           format: date-time
       required:
         - id
-        - quoteRequestId
+        - customerName
+        - customerEmail
         - status
+        - totalAmount
         - createdAt
         - updatedAt
+
+    QuoteLineItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        quoteId:
+          type: integer
+        description:
+          type: string
+        unit:
+          type: string
+        quantity:
+          type: number
+        unitPrice:
+          type: number
+        total:
+          type: number
+      required:
+        - id
+        - quoteId
+        - description
+        - unit
+        - quantity
+        - unitPrice
+        - total
 
     QuoteWithLineItems:
       allOf:
@@ -569,12 +708,39 @@ components:
       properties:
         quoteRequestId:
           type: integer
+          nullable: true
+        customerName:
+          type: string
+        customerEmail:
+          type: string
         expiryDate:
           type: string
         notes:
           type: string
+        lineItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpsertLineItemBody"
       required:
-        - quoteRequestId
+        - customerName
+        - customerEmail
+
+    UpdateQuoteBody:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [draft, sent, accepted, declined]
+        notes:
+          type: string
+          nullable: true
+        expiryDate:
+          type: string
+          nullable: true
+        lineItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpsertLineItemBody"
 
     UpdateQuoteStatusBody:
       type: object
@@ -585,37 +751,6 @@ components:
       required:
         - status
 
-    QuoteLineItem:
-      type: object
-      properties:
-        id:
-          type: integer
-        quoteId:
-          type: integer
-        description:
-          type: string
-        unit:
-          type: string
-        quantity:
-          type: string
-        unitPrice:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - quoteId
-        - description
-        - unit
-        - quantity
-        - unitPrice
-        - createdAt
-        - updatedAt
-
     UpsertLineItemBody:
       type: object
       properties:
@@ -624,9 +759,9 @@ components:
         unit:
           type: string
         quantity:
-          type: string
+          type: number
         unitPrice:
-          type: string
+          type: number
       required:
         - description
         - unit
@@ -640,30 +775,36 @@ components:
           type: integer
         quoteId:
           type: integer
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        totalAmount:
+          type: number
         status:
           type: string
           enum: [unpaid, paid]
         dueDate:
           type: string
           nullable: true
-        total:
+        paidAt:
           type: string
+          format: date-time
+          nullable: true
         notes:
           type: string
           nullable: true
         createdAt:
           type: string
           format: date-time
-        updatedAt:
-          type: string
-          format: date-time
       required:
         - id
         - quoteId
+        - customerName
+        - customerEmail
+        - totalAmount
         - status
-        - total
         - createdAt
-        - updatedAt
 
     UpdateInvoiceStatusBody:
       type: object

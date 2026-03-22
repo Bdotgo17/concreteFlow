@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, date } from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, date, numeric } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -17,7 +17,9 @@ export const quoteRequestsTable = pgTable("quote_requests", {
   customerPhone: text("customer_phone"),
   customerAddress: text("customer_address"),
   projectDescription: text("project_description").notNull(),
-  desiredDate: date("desired_date"),
+  concreteType: text("concrete_type").notNull().default("Ready-Mix"),
+  volumeEstimate: numeric("volume_estimate", { precision: 10, scale: 2 }).notNull().default("0"),
+  desiredDeliveryDate: date("desired_delivery_date"),
   status: text("status")
     .$type<QuoteRequestStatus>()
     .default("pending")
